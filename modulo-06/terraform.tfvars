@@ -1,6 +1,4 @@
-# Module that sets the default values ​​of all project variables
-
-project_name = "modulo-6"
-project_customer = "cloud_treinamentos"
-project_provider = "aws"
-project_region = "us-east-1"
+# Module that sets the default values ​​of project sensitive variables, such as
+# password, private keys, and other secrets. These should not be part of version 
+# control as they are data points which are potentially sensitive and subject 
+# to change depending on the environment.
