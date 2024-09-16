@@ -9,11 +9,6 @@ terraform {
     required_version = ">= 1.9.0"
 }
 
-# Configure the provider
-provider "aws" {
-    region = var.project_region
-}
-
 # Define resources names
 locals {
     vpc_name = format("%s-%s-%s-vpc", var.project_provider, var.project_customer, var.project_name)

@@ -23,3 +23,15 @@ variable "project_region" {
     type = string
     default = "us-east-1"
 }
+
+variable "project_accessKey" {
+    description = "Define access key"
+    type = string
+    sensitive = true
+}
+
+variable "project_secretKey" {
+    description = "Define secret key"
+    type = string
+    sensitive = true
+}
