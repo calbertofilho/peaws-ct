@@ -11,5 +11,10 @@ terraform {
 
 # Configure the provider
 provider "aws" {
-    region = "us-east-1"
+    region = var.project_region
+}
+
+# Set resources names
+locals {
+  rds_instance_name = format("%s-%s-%s-rds", var.project_provider, var.project_customer, var.project_name)
 }
