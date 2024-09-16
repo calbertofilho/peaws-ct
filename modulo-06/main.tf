@@ -14,7 +14,9 @@ provider "aws" {
     region = var.project_region
 }
 
-# Set resources names
+# Define resources names
 locals {
-  rds_instance_name = format("%s-%s-%s-rds", var.project_provider, var.project_customer, var.project_name)
+    vpc_name = format("%s-%s-%s-vpc", var.project_provider, var.project_customer, var.project_name)
+    ec2_name = format("%s-%s-%s-ec2", var.project_provider, var.project_customer, var.project_name)
+    rds_name = format("%s-%s-%s-rds", var.project_provider, var.project_customer, var.project_name)
 }
