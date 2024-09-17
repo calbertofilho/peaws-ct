@@ -1,10 +1,10 @@
 # Criação da VPC (vpc)
-resource "aws_vpc" "tcb_blog_vpc" {
+resource "aws_vpc" "project-vpc" {
     cidr_block = "10.0.0.0/16"
     enable_dns_hostnames = true
 
     tags = merge(local.common_tags, {
-        Name = "tcb_blog_vpc"
+        Name = local.vpc_name
     })
 
     lifecycle {
@@ -16,7 +16,7 @@ resource "aws_vpc" "tcb_blog_vpc" {
 
 # Criação da Subnet Pública (public_subnet)
 resource "aws_subnet" "tcb_blog_public_subnet" {
-    vpc_id     = aws_vpc.tcb_blog_vpc.id
+    vpc_id     = aws_vpc.project-vpc.id
     cidr_block = "10.0.1.0/24"
 
     tags = merge(local.common_tags, {
@@ -32,7 +32,7 @@ resource "aws_subnet" "tcb_blog_public_subnet" {
 
 # Criação do Internet Gateway (igw)
 resource "aws_internet_gateway" "tcb_blog_igw" {
-    vpc_id = aws_vpc.tcb_blog_vpc.id
+    vpc_id = aws_vpc.project-vpc.id
 
     tags = merge(local.common_tags, {
         Name = "tcb_blog_igw"
@@ -47,7 +47,7 @@ resource "aws_internet_gateway" "tcb_blog_igw" {
 
 # Criação da Tabela de Roteamento (rtb)
 resource "aws_route_table" "tcb_blog_rt" {
-    vpc_id = aws_vpc.tcb_blog_vpc.id
+    vpc_id = aws_vpc.project-vpc.id
 
     route {
         cidr_block = "0.0.0.0/0"
