@@ -3,7 +3,6 @@ resource "aws_vpc" "vpc" {
     cidr_block = var.project_cidr
     enable_dns_hostnames = true
     enable_dns_support = true
-
     tags = merge(local.common_tags, {
     # tags = {
         Name = "${local.vpc_name}"
@@ -79,17 +78,16 @@ resource "aws_internet_gateway" "igw" {
 # Criação da Route Table Pública (rtb)
 resource "aws_route_table" "public_rtb" {
     vpc_id = aws_vpc.vpc.id
-
-    route {
-        cidr_block = "0.0.0.0/0"
-        gateway_id = aws_internet_gateway.igw.id
-    }
-
     tags = merge(local.common_tags, {
     # tags = {
         Name = "${local.route_name}-public"
     # }
     })
+
+    route {
+        cidr_block = "0.0.0.0/0"
+        gateway_id = aws_internet_gateway.igw.id
+    }
 }
 
 # Criação da Route Table Privada (rtb)
