@@ -1,11 +1,11 @@
 # Criação da VPC (vpc)
 resource "aws_vpc" "vpc" {
-    cidr_block = var.project_cidr
+    cidr_block = format("%s", var.project_cidr-blocks["vpc"][0])
     enable_dns_hostnames = true
     enable_dns_support = true
     tags = merge(local.common_tags, {
     # tags = {
-        Name = "${local.vpc_name}"
+        Name = format("%s", local.vpc_name)
     # }
     })
 
@@ -13,15 +13,6 @@ resource "aws_vpc" "vpc" {
         ignore_changes = [
             tags["Created_Date"]
         ]
-    }
-}
-
-# Consulta das zonas disponiveis na regiao selecionada
-data "aws_availability_zones" "available_zones" {
-    state = "available"
-    filter {
-        name = "region-name"
-        values = [var.project_region]
     }
 }
 
@@ -70,7 +61,7 @@ resource "aws_internet_gateway" "igw" {
     vpc_id = aws_vpc.vpc.id
     tags = merge(local.common_tags, {
     # tags = {
-        Name = "${local.gateway_name}"
+        Name = format("%s", local.gateway_name)
     # }
     })
 }
@@ -85,7 +76,7 @@ resource "aws_route_table" "public_rtb" {
     })
 
     route {
-        cidr_block = "0.0.0.0/0"
+        cidr_block = format("%s", var.project_cidr-blocks["all"][0])
         gateway_id = aws_internet_gateway.igw.id
     }
 }

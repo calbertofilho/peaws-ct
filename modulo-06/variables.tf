@@ -32,7 +32,7 @@ variable "project_secretKey" {
     sensitive = true
 }
 
-variable "project_cidr" {
-    description = "Define the IPv4 block"
-    type = string
+variable "project_cidr-blocks" {
+    description = "Define the IPs blocks"
+    type = map
 }
