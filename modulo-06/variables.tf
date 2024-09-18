@@ -31,3 +31,8 @@ variable "project_secretKey" {
     type = string
     sensitive = true
 }
+
+variable "project_cidr" {
+    description = "Define the IPv4 block"
+    type = string
+}

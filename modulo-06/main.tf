@@ -11,9 +11,12 @@ terraform {
 
 # Define resources names and default tags
 locals {
-    vpc_name = format("%s-%s-vpc_%s", var.project_customer, var.project_name, var.project_provider)
-    ec2_name = format("%s-%s-ec2_%s", var.project_customer, var.project_name, var.project_provider)
-    rds_name = format("%s-%s-rds_%s", var.project_customer, var.project_name, var.project_provider)
+    vpc_name = format("%s-%s-vpc", var.project_customer, var.project_name)
+    subnet_name = format("%s-%s-net", var.project_customer, var.project_name)
+    gateway_name = format("%s-%s-igw", var.project_customer, var.project_name)
+    route_name = format("%s-%s-rtb", var.project_customer, var.project_name)
+    ec2_name = format("%s-%s-ec2", var.project_customer, var.project_name)
+    rds_name = format("%s-%s-rds", var.project_customer, var.project_name)
     common_tags = {
         Environment = "Test"
         Project = var.project_name

@@ -3,7 +3,9 @@ provider "aws" {
     region = var.project_region
     access_key = var.project_accessKey
     secret_key = var.project_secretKey
-
+    # default_tags {
+    #     tags = local.common_tags
+    # }
     # default_tags {
     #     tags = {
     #         Environment = "Test"
