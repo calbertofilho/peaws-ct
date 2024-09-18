@@ -34,7 +34,7 @@ resource "aws_subnet" "private_subnet" {
     availability_zone = data.aws_availability_zones.available_zones.names[count.index]
     tags = merge(local.common_tags, {
     # tags = {
-        Name = "${local.subnet_name}-private${count.index+1}"
+        Name = format("%s-private%s", local.subnet_name, count.index+1)
     # }
     })
 
@@ -54,7 +54,7 @@ resource "aws_subnet" "public_subnet" {
     map_public_ip_on_launch = true
     tags = merge(local.common_tags, {
     # tags = {
-        Name = "${local.subnet_name}-public${count.index+1}"
+        Name = format("%s-public%s", local.subnet_name, count.index+1)
     # }
     })
 
@@ -80,7 +80,7 @@ resource "aws_route_table" "public_rtb" {
     vpc_id = aws_vpc.vpc.id
     tags = merge(local.common_tags, {
     # tags = {
-        Name = "${local.route_name}-public"
+        Name = format("%s-public", local.route_name)
     # }
     })
 
@@ -95,7 +95,7 @@ resource "aws_route_table" "private_rtb" {
     vpc_id = aws_vpc.vpc.id
     tags = merge(local.common_tags, {
     # tags = {
-        Name = "${local.route_name}-private"
+        Name = format("%s-private", local.route_name)
     # }
     })
 }
