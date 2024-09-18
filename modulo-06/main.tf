@@ -26,5 +26,6 @@ locals {
         Created_Date = formatdate("YYYY-MM-DD hh:mm:ss ZZZ", timestamp())
         Modified_Date = formatdate("YYYY-MM-DD hh:mm:ss ZZZ", timestamp())
         Created_By = "Terraform"
+        Developer = "Carlos Alberto Filho"
     }
 }

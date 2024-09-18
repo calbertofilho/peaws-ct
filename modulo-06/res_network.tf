@@ -104,3 +104,8 @@ resource "aws_route_table_association" "private_rtb_assoc" {
     subnet_id = aws_subnet.private_subnet[count.index].id
     route_table_id = aws_route_table.private_rtb.id
 }
+
+resource "aws_main_route_table_association" "main_rtb" {
+    vpc_id = aws_vpc.vpc.id
+    route_table_id = aws_route_table.private_rtb.id
+}

@@ -1,6 +1,6 @@
 resource "aws_network_acl" "infra" {
     vpc_id = aws_vpc.vpc.id
-    subnet_ids = [for subnet in aws_subnet.public_subnet : subnet.id]
+    subnet_ids = [for subnet in aws_subnet.private_subnet : subnet.id]
     tags = merge(local.common_tags, {
     # tags = {
         Name = format("%s", local.acl_name)
@@ -86,9 +86,15 @@ resource "aws_network_acl" "infra" {
     }
 }
 
-resource "aws_security_group" "example" {
-    name        = "allow_tls"
-    description = "Allow TLS inbound traffic and all outbound traffic"
+# resource "aws_network_acl_association" "main_acl" {
+#     network_acl_id = aws_network_acl.infra.id
+#     count = length(aws_subnet.public_subnet)
+#     subnet_id = aws_subnet.public_subnet[count.index].id
+# }
+
+resource "aws_security_group" "web-app" {
+    name        = "allow_traffic"
+    description = "Allow HTTP/TLS/SSH inbound traffic and all outbound traffic"
     vpc_id = aws_vpc.vpc.id
     tags = merge(local.common_tags, {
     # tags = {
@@ -96,9 +102,37 @@ resource "aws_security_group" "example" {
     # }
     })
 
-    ingress = []
+    ingress {
+        description = "SSH Inbound"
+        from_port   = 22
+        to_port     = 22
+        protocol    = "tcp"
+        cidr_blocks = var.project_cidr-blocks["all"]
+    }
 
-    egress = []
+    ingress {
+        description = "HTTP Inbound"
+        from_port   = 80
+        to_port     = 80
+        protocol    = "tcp"
+        cidr_blocks = var.project_cidr-blocks["all"]
+    }
+
+    ingress {
+        description = "HTTPS Inbound"
+        from_port   = 443
+        to_port     = 443
+        protocol    = "tcp"
+        cidr_blocks = var.project_cidr-blocks["all"]
+    }
+
+    egress {
+        description = "All traffic Outbound"
+        from_port   = 0
+        to_port     = 0
+        protocol    = -1
+        cidr_blocks = var.project_cidr-blocks["all"]
+    }
 
     lifecycle {
         ignore_changes = [
