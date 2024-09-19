@@ -17,7 +17,7 @@ locals {
     route_name = format("%s-%s-rtb", var.project_customer, var.project_name)
     acl_name = format("%s-%s-acl", var.project_customer, var.project_name)
     sg_name = format("%s-%s-sg", var.project_customer, var.project_name)
-    ec2_name = format("%s-%s-ec2", var.project_customer, var.project_name)
+    instance_name = format("%s-%s-ec2", var.project_customer, var.project_name)
     rds_name = format("%s-%s-rds", var.project_customer, var.project_name)
     common_tags = {
         Environment = "Test"

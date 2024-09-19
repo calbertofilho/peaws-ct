@@ -79,7 +79,52 @@ resource "aws_network_acl" "nacl-public" {
     #     action = "allow"
     # }
 
-    egress{
+    egress {
+        rule_no    = 10
+        from_port  = 0
+        to_port    = 0
+        protocol   = "icmp"
+        cidr_block = format("%s", var.project_cidr-blocks["all"][0])
+        action     = "allow"
+    }
+
+    egress {
+        rule_no    = 20
+        from_port  = 22
+        to_port    = 22
+        protocol   = "tcp"
+        cidr_block = format("%s", var.project_cidr-blocks["all"][0])
+        action     = "allow"
+    }
+
+    egress {
+        rule_no    = 30
+        from_port  = 80
+        to_port    = 80
+        protocol   = "tcp"
+        cidr_block = format("%s", var.project_cidr-blocks["all"][0])
+        action     = "allow"
+    }
+
+    egress {
+        rule_no    = 40
+        from_port  = 443
+        to_port    = 443
+        protocol   = "tcp"
+        cidr_block = format("%s", var.project_cidr-blocks["all"][0])
+        action     = "allow"
+    }
+
+    egress {
+        rule_no    = 50
+        from_port  = 3389
+        to_port    = 3389
+        protocol   = "tcp"
+        cidr_block = format("%s", var.project_cidr-blocks["all"][0])
+        action     = "allow"
+    }
+
+    egress {
         rule_no = 99
         from_port = 1024
         to_port = 65535
@@ -88,7 +133,7 @@ resource "aws_network_acl" "nacl-public" {
         action = "allow"
     }
 
-    egress{
+    egress {
         rule_no = 100
         from_port = 1024
         to_port = 65535
@@ -176,7 +221,43 @@ resource "aws_network_acl" "nacl-private" {
     #     action = "allow"
     # }
 
-    egress{
+    egress {
+        rule_no    = 10
+        from_port  = 0
+        to_port    = 0
+        protocol   = "icmp"
+        cidr_block = format("%s", var.project_cidr-blocks["all"][0])
+        action     = "allow"
+    }
+
+    egress {
+        rule_no    = 20
+        from_port  = 80
+        to_port    = 80
+        protocol   = "tcp"
+        cidr_block = format("%s", var.project_cidr-blocks["all"][0])
+        action     = "allow"
+    }
+
+    egress {
+        rule_no    = 30
+        from_port  = 443
+        to_port    = 443
+        protocol   = "tcp"
+        cidr_block = format("%s", var.project_cidr-blocks["all"][0])
+        action     = "allow"
+    }
+
+    egress {
+        rule_no    = 40
+        from_port  = 3306
+        to_port    = 3306
+        protocol   = "tcp"
+        cidr_block = format("%s", var.project_cidr-blocks["all"][0])
+        action     = "allow"
+    }
+
+    egress {
         rule_no = 99
         from_port = 1024
         to_port = 65535
@@ -185,7 +266,7 @@ resource "aws_network_acl" "nacl-private" {
         action = "allow"
     }
 
-    egress{
+    egress {
         rule_no = 100
         from_port = 1024
         to_port = 65535
@@ -201,7 +282,7 @@ resource "aws_network_acl" "nacl-private" {
     }
 }
 
-resource "aws_security_group" "web-app" {
+resource "aws_security_group" "allow_ssh_http_traffic" {
     name        = "allow_traffic"
     description = "Allow HTTP/TLS/SSH inbound traffic and all outbound traffic"
     vpc_id = aws_vpc.vpc.id
@@ -235,13 +316,13 @@ resource "aws_security_group" "web-app" {
         cidr_blocks = var.project_cidr-blocks["all"]
     }
 
-    # egress {
-    #     description = "All traffic Outbound"
-    #     from_port   = 0
-    #     to_port     = 0
-    #     protocol    = -1
-    #     cidr_blocks = var.project_cidr-blocks["all"]
-    # }
+    egress {
+        description = "All traffic Outbound"
+        from_port   = 0
+        to_port     = 0
+        protocol    = -1
+        cidr_blocks = var.project_cidr-blocks["all"]
+    }
 
     lifecycle {
         ignore_changes = [
