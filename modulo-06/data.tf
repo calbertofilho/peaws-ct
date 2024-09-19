@@ -1,3 +1,8 @@
+# Consulta o meu IP publico
+data "external" "myipaddr" {
+    program = ["bash", "-c", "curl -s 'https://ipinfo.io/json'"]
+}
+
 # Consulta das zonas disponiveis na regiao selecionada
 data "aws_availability_zones" "available_zones" {
     state = "available"
@@ -8,7 +13,7 @@ data "aws_availability_zones" "available_zones" {
     }
 }
 
-# Consulta a ami mais recente do Ubuntu 20.04
+# Consulta a ami mais recente do Ubuntu
 data "aws_ami" "ubuntu" {
     most_recent = true
 

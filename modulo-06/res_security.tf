@@ -297,7 +297,7 @@ resource "aws_security_group" "allow_ssh_http_traffic" {
         from_port   = 22
         to_port     = 22
         protocol    = "tcp"
-        cidr_blocks = var.project_cidr-blocks["all"]
+        cidr_blocks = [format("%s/%s", data.external.myipaddr.result["ip"], 32)]
     }
 
     ingress {
