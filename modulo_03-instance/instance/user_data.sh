@@ -1,6 +1,6 @@
 #! /bin/bash
 
-sudo apt update && sudo apt install -fym apache2
+sudo apt update && sudo apt install -fym apache2 ec2-instance-connect
 sudo systemctl enable apache2 --now
 echo -ne '<!DOCTYPE html>
 

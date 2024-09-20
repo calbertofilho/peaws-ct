@@ -14,7 +14,7 @@ data "aws_availability_zones" "available_zones" {
 }
 
 # Consulta a ami mais recente do Ubuntu
-data "aws_ami" "ubuntu" {
+data "aws_ami" "most_recent_ubuntu_ami" {
     most_recent = true
 
     filter {

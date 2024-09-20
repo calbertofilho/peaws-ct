@@ -1,3 +1,4 @@
+### VPC ###
 # Criação da VPC (vpc)
 resource "aws_vpc" "vpc" {
     cidr_block = format("%s", var.project_cidr-blocks["vpc"][0])
@@ -16,6 +17,7 @@ resource "aws_vpc" "vpc" {
     }
 }
 
+### SUBNETS ###
 # Criação das Subnets Privadas (private_subnet)
 resource "aws_subnet" "private_subnet" {
     count = length(data.aws_availability_zones.available_zones.names)
@@ -56,6 +58,7 @@ resource "aws_subnet" "public_subnet" {
     }
 }
 
+### INTERNET GATEWAY ###
 # Criação do Internet Gateway (igw)
 resource "aws_internet_gateway" "igw" {
     vpc_id = aws_vpc.vpc.id
@@ -66,7 +69,8 @@ resource "aws_internet_gateway" "igw" {
     })
 }
 
-# Criação da Route Table Pública (rtb)
+### ROUTE TABLE ###
+# Criação da Route Table Pública (public_rtb)
 resource "aws_route_table" "public_rtb" {
     vpc_id = aws_vpc.vpc.id
     tags = merge(local.common_tags, {
@@ -81,7 +85,7 @@ resource "aws_route_table" "public_rtb" {
     }
 }
 
-# Criação da Route Table Privada (rtb)
+# Criação da Route Table Privada (private_rtb)
 resource "aws_route_table" "private_rtb" {
     vpc_id = aws_vpc.vpc.id
     tags = merge(local.common_tags, {
@@ -91,21 +95,22 @@ resource "aws_route_table" "private_rtb" {
     })
 }
 
-# Associação da Subnet Pública com a Tabela de Roteamento Pública
+# Associação da Tabela de Roteamento Privada como padrão para a VPC criada (main_rtb)
+resource "aws_main_route_table_association" "main_rtb" {
+    vpc_id = aws_vpc.vpc.id
+    route_table_id = aws_route_table.private_rtb.id
+}
+
+# Associação da Subnet Pública com a Tabela de Roteamento Pública (public_rtb_assoc)
 resource "aws_route_table_association" "public_rtb_assoc" {
     count = length(aws_subnet.public_subnet)
     subnet_id = aws_subnet.public_subnet[count.index].id
     route_table_id = aws_route_table.public_rtb.id
 }
 
-# Associação da Subnet Pública com a Tabela de Roteamento Privada
+# Associação da Subnet Privada com a Tabela de Roteamento Privada (private_rtb_assoc)
 resource "aws_route_table_association" "private_rtb_assoc" {
     count = length(aws_subnet.private_subnet)
     subnet_id = aws_subnet.private_subnet[count.index].id
-    route_table_id = aws_route_table.private_rtb.id
-}
-
-resource "aws_main_route_table_association" "main_rtb" {
-    vpc_id = aws_vpc.vpc.id
     route_table_id = aws_route_table.private_rtb.id
 }
