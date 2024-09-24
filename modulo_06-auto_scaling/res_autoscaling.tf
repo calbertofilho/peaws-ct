@@ -85,25 +85,25 @@ resource "aws_cloudwatch_metric_alarm" "ec2_scale_up-cloudwatch_alarm" {
     threshold = 70
     alarm_description = "This metric monitors ec2 cpu utilization, if it goes above 70% for 1 period it will trigger an alarm."
     insufficient_data_actions = []
-
-    alarm_actions = [
-        "${aws_autoscaling_policy.scale_up.arn}"
-    ]
+    dimensions = {
+        AutoScalingGroupName = aws_autoscaling_group.autoscale.name
+    }
+    alarm_actions = [aws_autoscaling_policy.scale_up.arn]
 }
 
 resource "aws_cloudwatch_metric_alarm" "ec2_scale_down-cloudwatch_alarm" {
-  alarm_name = "ec2_scale_down-cloudwatch_alarm"
-  comparison_operator = "LessThanOrEqualToThreshold"
-  evaluation_periods = 1
-  metric_name = "CPUUtilization"
-  namespace = "AWS/EC2"
-  period = 300
-  statistic = "Average"
-  threshold = 30
-  alarm_description = "This metric monitors ec2 cpu utilization, if it goes below 30% for 1 period it will trigger an alarm."
-  insufficient_data_actions = []
-
-  alarm_actions = [
-      "${aws_autoscaling_policy.scale_down.arn}"
-  ]
+    alarm_name = "ec2_scale_down-cloudwatch_alarm"
+    comparison_operator = "LessThanOrEqualToThreshold"
+    evaluation_periods = 1
+    metric_name = "CPUUtilization"
+    namespace = "AWS/EC2"
+    period = 300
+    statistic = "Average"
+    threshold = 30
+    alarm_description = "This metric monitors ec2 cpu utilization, if it goes below 30% for 1 period it will trigger an alarm."
+    insufficient_data_actions = []
+    dimensions = {
+        AutoScalingGroupName = aws_autoscaling_group.autoscale.name
+    }
+    alarm_actions = [aws_autoscaling_policy.scale_down.arn]
 }
