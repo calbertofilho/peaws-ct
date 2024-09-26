@@ -1,0 +1,11 @@
+Nesta atividade você deve postar o link do load balance com AutoScaling configurado
+para avaliação do professor.
+
+Você deve criar 1 instancia com a imagem disponibilizada no modulo (ami-0ad49176e48491d33)
+que esta na região us-east-1 e configurar para adicionar outra instancia quando processamento
+for maior que 70% e excluir quando o processamento for menos que 30%.
+
+O objetivo dessa tarefa é avaliar seu desempenho e seu aprendizado até aqui
+
+Obs: Este exercício pode levar até 2 dia útil para ser avaliado
+DICA: Utilizar a métrica - EC2 > Grupo de Auto Scaling 

@@ -1,0 +1,74 @@
+PROVA DE CERTIFICAÇÃO - N. VIRGINIA
+LEIA TODA A PROVA ANTES DE INICIAR!!!
+Tempo para conclusão: 5 horas
+Dúvida: Falar com o suporte por meio do Discord através do usuário: @RodrigoTuratti#7522
+carlos.r.borzi@gmail.com Alternar conta
+
+
+
+E-mail *
+Nome completo *
+E-mail *
+CPF *
+Telefone *
+* Indica uma pergunta obrigatória
+
+O objetivo desta avaliação é criar um ambiente conforme descrito nas 10 questões
+abaixo dentro da região de N. VIRGINIA, cada questão valerá 1 ponto.
+
+1 - Criar um grupo de usuário chamado “Infraestrutura” com permissão total para
+todos serviços, dentro deste grupo você deve criar um usuário chamado Mateus.
+Criar um grupo "Desenvolvimento" com permissão apenas leitura no EC2 e S3, dentro
+deste grupo você deve criar um usuário chamado Caio.
+OK
+
+2 - Crie uma VPC com 2 SUBNETS públicas e 2 SUBNETS privadas com bloco 10.1.0.0/16
+OK
+
+3 - Criar uma instância Windows PÚBLICA TOTAL com nome "Windows01", dentro da 
+nstância instalar e configurar o AWS CLI. Coloque na resposta desta questão o IP
+de acesso, usuário e senha da instancia, utilize o tipo de instância t2.micro.
+
+4 - Crie 2 instâncias PÚBLICAS TOTAIS com a imagem "ami-0ce99e1aa603296bb", crie
+também um Application Load Balancer entre as 2 instâncias, levando em consideração
+a alta disponibilidade, e utilize instâncias t2.micro.
+OK
+
+5 - Criar uma instância com a imagem "ami-0ce99e1aa603296bb" que seja acessível
+apenas de dentro da VPC e anexe um volume EBS extra de 10 GB, utilize o tipo t2.micro.
+OK
+
+6 - Crie um banco de dados MySQL com acesso PÚBLICO TOTAL utilizando o RDS e coloque
+na resposta desta questão o endpoint, usuário e senha para acesso ao banco, utilize
+instância db.t2.micro sem alta disponibilidade.
+
+7 - Utilizando o CodeDeploy faça o deploy da nova versão da aplicação dentro das
+instâncias criadas na questão 4. A nova versão da aplicação está disponível no S3
+dentro do bucket "deploy-prova-aws-virginia". Será necessário INSTALAR, CONFIGURAR
+e REINICIAR o agente:
+https://docs.aws.amazon.com/pt_br/codedeploy/latest/userguide/codedeploy-agent-operations-install-linux.html 
+OK
+
+8 - Crie um novo bucket e configure um site estático com os arquivos presentes na
+URL no fim da questão, configure a página principal e de erro. Após isto, configure
+a REPLICAÇÃO deste bucket criado em um novo bucket na mesma região:
+https://cloudtreinamentos.s3.amazonaws.com/AWS/zip/Site.zip
+OK
+
+9 - No serviço de DNS acesse o domínio "profissionalcloud.com" e crie um registro
+para o load balancer com endereço "balance.profissionalcloud.com" e crie um registro
+para o site estático com o endereço "estatico.profissionalcloud.com".
+OK
+
+10 - No CloudWatch crie um alarme para a quantidade de objetos de dentro do bucket
+"deploy-prova-aws-virginia"  para quando a quantidade de objetos PASSAR de 500 com
+notificação para seu e-mail no SNS. Crie também um 1 gráfico de tráfego do load
+balancer e outros 2 gráficos de sua escolha no painel de nome "virginia".
+OBS: Não se esqueça de salvar.
+OK
+
+
+
+Nunca envie senhas pelo Formulários Google.
+Este formulário foi criado em InitD LTDA. Denunciar abuso
+Google Formulários
