@@ -1,0 +1,17 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Install NPM
+      - npm install
+  build:
+    commands:
+      - echo Build WebSite
+      - npm run build
+
+artifacts:
+  files:
+    - build/**/*
+    - Scripts/**/*
+    - Config/AppSpec.yml
