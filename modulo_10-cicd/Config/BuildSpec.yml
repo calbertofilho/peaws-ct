@@ -7,8 +7,12 @@ phases:
       - npm install
   build:
     commands:
-      - echo Build WebSite
+      - echo Build iniciado em `date`
+      - echo   -> Build WebSite
       - npm run build
+  post_build:
+    commands:
+      - echo Build finalizado em `date`
 
 artifacts:
   files:
