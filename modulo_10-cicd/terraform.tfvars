@@ -1,6 +1,6 @@
 # Module that sets the default values ​​of all project variables
 
-project_name = "modulo-09"
+project_name = "modulo-10"
 project_customer = "cloud-treinamentos"
 project_provider = "aws"
 project_region = "us-east-1"
