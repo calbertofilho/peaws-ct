@@ -36,8 +36,3 @@ variable "project_cidr-blocks" {
     description = "Define the IPs blocks"
     type = map
 }
-
-variable "project_common_tags" {
-    description = "Default tags to apply to all resources."
-    type = map(any)
-}

@@ -8,4 +8,13 @@ locals {
     sg_name = format("%s-%s-sg", var.project_customer, var.project_name)
     instance_name = format("%s-%s-ec2", var.project_customer, var.project_name)
     elb_name = format("%s-%s-alb", var.project_customer, var.project_name)
+    common_tags = {
+        Environment = "Test"
+        Project = var.project_name
+        Customer = var.project_customer
+        Created_Date = formatdate("YYYY-MM-DD hh:mm:ss ZZZ", timestamp())
+        Modified_Date = formatdate("YYYY-MM-DD hh:mm:ss ZZZ", timestamp())
+        Created_By = "Terraform"
+        Developer = "Carlos Alberto Filho"
+    }
 }

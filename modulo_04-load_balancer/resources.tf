@@ -4,7 +4,7 @@ resource "aws_vpc" "vpc" {
     cidr_block = format("%s", var.project_cidr-blocks["vpc"][0])
     enable_dns_hostnames = true
     enable_dns_support = true
-    tags = merge(var.project_common_tags, {
+    tags = merge(local.common_tags, {
         Name = format("%s", local.vpc_name)
     })
     lifecycle {
@@ -22,7 +22,7 @@ resource "aws_subnet" "private_subnet" {
     # cidr_block = cidrsubnet(cidrsubnet(aws_vpc.vpc.cidr_block, 2, 2), 8, count.index)
     cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, 8, count.index+10)
     availability_zone = data.aws_availability_zones.available_zones.names[count.index]
-    tags = merge(var.project_common_tags, {
+    tags = merge(local.common_tags, {
         Name = format("%s-private%s", local.subnet_name, count.index+1)
     })
     lifecycle {
@@ -39,7 +39,7 @@ resource "aws_subnet" "public_subnet" {
     cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, 8, count.index+20)
     availability_zone = data.aws_availability_zones.available_zones.names[count.index]
     map_public_ip_on_launch = true
-    tags = merge(var.project_common_tags, {
+    tags = merge(local.common_tags, {
         Name = format("%s-public%s", local.subnet_name, count.index+1)
     })
     lifecycle {
@@ -53,7 +53,7 @@ resource "aws_subnet" "public_subnet" {
 # Criação do Internet Gateway (igw)
 resource "aws_internet_gateway" "igw" {
     vpc_id = aws_vpc.vpc.id
-    tags = merge(var.project_common_tags, {
+    tags = merge(local.common_tags, {
         Name = format("%s", local.gateway_name)
     })
 }
@@ -62,7 +62,7 @@ resource "aws_internet_gateway" "igw" {
 # Criação da Route Table Pública (public_rtb)
 resource "aws_route_table" "public_rtb" {
     vpc_id = aws_vpc.vpc.id
-    tags = merge(var.project_common_tags, {
+    tags = merge(local.common_tags, {
         Name = format("%s-public", local.route_name)
     })
     route {
@@ -74,7 +74,7 @@ resource "aws_route_table" "public_rtb" {
 # Criação da Route Table Privada (private_rtb)
 resource "aws_route_table" "private_rtb" {
     vpc_id = aws_vpc.vpc.id
-    tags = merge(var.project_common_tags, {
+    tags = merge(local.common_tags, {
         Name = format("%s-private", local.route_name)
     })
 }
@@ -104,7 +104,7 @@ resource "aws_route_table_association" "private_rtb_assoc" {
 resource "aws_network_acl" "nacl_public" {
     vpc_id = aws_vpc.vpc.id
     subnet_ids = [for subnet in aws_subnet.public_subnet : subnet.id]
-    tags = merge(var.project_common_tags, {
+    tags = merge(local.common_tags, {
         Name = format("%s-public", local.acl_name)
     })
     ingress {
@@ -230,7 +230,7 @@ resource "aws_network_acl" "nacl_public" {
 resource "aws_network_acl" "nacl_private" {
     vpc_id = aws_vpc.vpc.id
     subnet_ids = [for subnet in aws_subnet.private_subnet : subnet.id]
-    tags = merge(var.project_common_tags, {
+    tags = merge(local.common_tags, {
         Name = format("%s-private", local.acl_name)
     })
     ingress {
@@ -345,7 +345,7 @@ resource "aws_instance" "instanceA" {
     vpc_security_group_ids = [aws_security_group.allow_ssh_http_traffic.id]
     user_data = "${file("instance/user_dataA.sh")}"
     associate_public_ip_address = true
-    tags = merge(var.project_common_tags, {
+    tags = merge(local.common_tags, {
         Name = format("%sA", local.instance_name)
     })
 }
@@ -359,7 +359,7 @@ resource "aws_instance" "instanceB" {
     vpc_security_group_ids = [aws_security_group.allow_ssh_http_traffic.id]
     user_data = "${file("instance/user_dataB.sh")}"
     associate_public_ip_address = true
-    tags = merge(var.project_common_tags, {
+    tags = merge(local.common_tags, {
         Name = format("%sB", local.instance_name)
     })
 }
@@ -369,7 +369,7 @@ resource "aws_security_group" "allow_ssh_http_traffic" {
     name = "allow_traffic"
     description = "Allow HTTP/TLS/SSH inbound traffic and all outbound traffic"
     vpc_id = aws_vpc.vpc.id
-    tags = merge(var.project_common_tags, {
+    tags = merge(local.common_tags, {
         Name = format("%s", local.sg_name)
     })
     ingress {
@@ -415,7 +415,7 @@ resource "aws_lb" "application_elb" {
     load_balancer_type = "application"
     security_groups = [aws_security_group.allow_ssh_http_traffic.id]
     subnets = [aws_subnet.public_subnet[0].id, aws_subnet.public_subnet[1].id]
-    tags = merge(var.project_common_tags, {
+    tags = merge(local.common_tags, {
         Name = format("%s", local.elb_name)
     })
 }
