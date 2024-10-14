@@ -26,7 +26,7 @@ OK
 OK
 
 3 - Criar uma instância Windows PÚBLICA TOTAL com nome "Windows01", dentro da 
-nstância instalar e configurar o AWS CLI. Coloque na resposta desta questão o IP
+instância instalar e configurar o AWS CLI. Coloque na resposta desta questão o IP
 de acesso, usuário e senha da instancia, utilize o tipo de instância t2.micro.
 
 4 - Crie 2 instâncias PÚBLICAS TOTAIS com a imagem "ami-0ce99e1aa603296bb", crie
@@ -70,5 +70,6 @@ OK
 
 
 Nunca envie senhas pelo Formulários Google.
-Este formulário foi criado em InitD LTDA. Denunciar abuso
+Este formulário foi criado em InitD LTDA.
+Denunciar abuso
 Google Formulários
