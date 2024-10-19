@@ -6,65 +6,522 @@ carlos.r.borzi@gmail.com Alternar conta
 
 
 
-E-mail *
-Nome completo *
-E-mail *
-CPF *
-Telefone *
+*E-mail
+*Nome completo
+*E-mail
+*CPF
+*Telefone
 * Indica uma pergunta obrigatória
 
 O objetivo desta avaliação é criar um ambiente conforme descrito nas 10 questões
 abaixo dentro da região de N. VIRGINIA, cada questão valerá 1 ponto.
 
-1 - Criar um grupo de usuário chamado “Infraestrutura” com permissão total para
-todos serviços, dentro deste grupo você deve criar um usuário chamado Mateus.
-Criar um grupo "Desenvolvimento" com permissão apenas leitura no EC2 e S3, dentro
-deste grupo você deve criar um usuário chamado Caio.
-OK
 
-2 - Crie uma VPC com 2 SUBNETS públicas e 2 SUBNETS privadas com bloco 10.1.0.0/16
-OK
 
-3 - Criar uma instância Windows PÚBLICA TOTAL com nome "Windows01", dentro da 
-instância instalar e configurar o AWS CLI. Coloque na resposta desta questão o IP
-de acesso, usuário e senha da instancia, utilize o tipo de instância t2.micro.
+#############################################################################################
+#                            P  R  E  P  A  R  A  T  I  V  O  S                             #
+#############################################################################################
+KEY PAIR
+  CarlosFilho-ProvaFinal-CloudTreinamentos.pem
+#############################################################################################
+                                                                                       # OK #
+                                                                                       ######
 
-4 - Crie 2 instâncias PÚBLICAS TOTAIS com a imagem "ami-0ce99e1aa603296bb", crie
-também um Application Load Balancer entre as 2 instâncias, levando em consideração
-a alta disponibilidade, e utilize instâncias t2.micro.
-OK
 
-5 - Criar uma instância com a imagem "ami-0ce99e1aa603296bb" que seja acessível
-apenas de dentro da VPC e anexe um volume EBS extra de 10 GB, utilize o tipo t2.micro.
-OK
+#############################################################################################
+# 01 #  Criar um grupo de usuário chamado “Infraestrutura” com permissão total para         #
+######  todos serviços, dentro deste grupo você deve criar um usuário chamado Mateus.       #
+#       Criar um grupo "Desenvolvimento" com permissão apenas leitura no EC2 e S3, dentro   #
+#       deste grupo você deve criar um usuário chamado Caio.                                #
+#############################################################################################
+Infraestrutura (AdministratosAccess)
+  https://upperaws.signin.aws.amazon.com/console
+  Mateus    (IAM User)
+  9bbU}1$=
 
-6 - Crie um banco de dados MySQL com acesso PÚBLICO TOTAL utilizando o RDS e coloque
-na resposta desta questão o endpoint, usuário e senha para acesso ao banco, utilize
-instância db.t2.micro sem alta disponibilidade.
+Desenvolvimento (AmazonEC2ReadOnlyAccess / AmazonS3ReadOnlyAccess)
+  https://upperaws.signin.aws.amazon.com/console
+  Caio      (IAM User)
+  xh5M[58_
+#############################################################################################
+                                                                                       # OK #
+                                                                                       ######
 
-7 - Utilizando o CodeDeploy faça o deploy da nova versão da aplicação dentro das
-instâncias criadas na questão 4. A nova versão da aplicação está disponível no S3
-dentro do bucket "deploy-prova-aws-virginia". Será necessário INSTALAR, CONFIGURAR
-e REINICIAR o agente:
+
+#############################################################################################
+# 02 #  Crie uma VPC com 2 SUBNETS públicas e 2 SUBNETS privadas com bloco 10.1.0.0/16      #
+#############################################################################################
+VPC
+  CIDR
+    10.1.0.0/16
+  Enable DNS resolution
+  Enable DNS hostnames
+  Tags
+    Name
+      CarlosFilho-ProvaFinal-VPC
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+
+SUBNETS
+  Privada01
+    CIDR
+      10.1.11.0/24
+    AZ
+      us-east-1a
+    Tags
+      Name
+        CarlosFilho-ProvaFinal-SubnetPrivate01
+      Common
+        CarlosFilho-ProvaFinal-CloudTreinamentos
+  Privada02
+    CIDR
+      10.1.12.0/24
+    AZ
+      us-east-1b
+    Tags
+      Name
+        CarlosFilho-ProvaFinal-SubnetPrivate02
+      Common
+        CarlosFilho-ProvaFinal-CloudTreinamentos
+  Publica01
+    CIDR
+      10.1.21.0/24
+    AZ
+      us-east-1a
+    Tags
+      Name
+        CarlosFilho-ProvaFinal-SubnetPublic01
+      Common
+        CarlosFilho-ProvaFinal-CloudTreinamentos
+  Publica02
+    CIDR
+      10.1.22.0/24
+    AZ
+      us-east-1b
+    Tags
+      Name
+        CarlosFilho-ProvaFinal-SubnetPublic02
+      Common
+        CarlosFilho-ProvaFinal-CloudTreinamentos
+
+INTERNET GATEWAY
+  Attach VPC
+    CarlosFilho-ProvaFinal-VPC
+  Tags
+    Name
+      CarlosFilho-ProvaFinal-IGW
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+
+ROUTE TABLE PUBLICA
+  Edit routes
+    10.1.0.0/16     local
+    0.0.0.0/16      Internet Gateway (CarlosFilho-ProvaFinal-IGW)
+  Tags
+    Name
+      CarlosFilho-ProvaFinal-RTBPublic
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+  Edit Subnet Associations
+    CarlosFilho-ProvaFinal-SubnetPublic01
+    CarlosFilho-ProvaFinal-SubnetPublic02
+
+ROUTE TABLE PRIVADA
+  Edit routes
+    10.1.0.0/16     local
+  Tags
+    Name
+      CarlosFilho-ProvaFinal-RTBPrivate
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+  Edit Subnet Associations
+    CarlosFilho-ProvaFinal-SubnetPrivate01
+    CarlosFilho-ProvaFinal-SubnetPrivate02
+
+SECURITY GROUPS (FIREWALL)
+WINDOWS
+  Nome
+    CarlosFilho-ProvaFinal-SGWin
+  Descrição
+    Security Group [SG_WINDOWS] liberando as portas necessarias para a avaliacao final
+  VPC
+    CarlosFilho-ProvaFinal-VPC
+  Regras de Entrada
+    RDP     3389        0.0.0.0/0
+  Regras de Saída
+    Todo o tráfego      0.0.0.0/0
+  Tags
+    Name
+      CarlosFilho-ProvaFinal-SGWin
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+
+LINUX
+  Nome
+    CarlosFilho-ProvaFinal-SGLnx
+  Descrição
+    Security Group [SG_LINUX] liberando as portas necessarias para a avaliacao final
+  VPC
+    CarlosFilho-ProvaFinal-VPC
+  Regras de Entrada
+    RDP     22          0.0.0.0/0
+    RDP     80          0.0.0.0/0
+    RDP     443         0.0.0.0/0
+  Regras de Saída
+    Todo o tráfego      0.0.0.0/0
+  Tags
+    Name
+      CarlosFilho-ProvaFinal-SGLnx
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+#############################################################################################
+                                                                                       # OK #
+                                                                                       ######
+
+
+#############################################################################################
+# 03 #  Criar uma instância Windows PÚBLICA TOTAL com nome "Windows01", dentro da           #
+######  instância instalar e configurar o AWS CLI. Coloque na resposta desta questão o IP   #
+#       de acesso, usuário e senha da instancia, utilize o tipo de instância t2.micro.      #
+#############################################################################################
+Tags
+  Name
+    Windows01
+  Common
+    CarlosFilho-ProvaFinal-CloudTreinamentos
+AMI
+  Microsoft Windows Server 2022 Base
+Instância
+  t2.micro
+Par de Chaves
+  CarlosFilho-ProvaFinal-CloudTreinamentos.pem
+VPC
+  CarlosFilho-ProvaFinal-VPC
+Subnet
+  CarlosFilho-ProvaFinal-SubnetPublic01
+IP Publico
+  Habilitar
+Grupo de Segurança
+  CarlosFilho-ProvaFinal-SGWin
+User_Data
+  <script>
+    msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi /qn
+  </script>
+
+Ações >> Obter Senha do Windows
+
+RESPOSTA
+  Windows01
+    IP Publico
+      54.227.225.139
+    Usuario
+      Administrator
+    Senha
+      t1J-G%SzQFO&(NISSqaVWB?8?dHep)kv
+#############################################################################################
+                                                                                       # OK #
+                                                                                       ######
+
+
+#############################################################################################
+# 04 #  Crie 2 instâncias PÚBLICAS TOTAIS com a imagem "ami-0ce99e1aa603296bb", crie        #
+######  também um Application Load Balancer entre as 2 instâncias, levando em consideração  #
+#       a alta disponibilidade, e utilize instâncias t2.micro.                              #
+#############################################################################################
+MODELO EXECUCAO (LAUNCH TEMPLATE)
+  Nome
+    CarlosFilho-ProvaFinal-LT
+  Descricao
+    Modelo de execucao da applicacao WEB
+  Tags
+    Name
+      CarlosFilho-ProvaFinal-LT
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+  AMI
+    ami-0ce99e1aa603296bb
+  Instância
+    t2.micro
+  Par de Chaves
+    CarlosFilho-ProvaFinal-CloudTreinamentos.pem
+  Subnet
+    Nao incluir no template
+  Grupo de Segurança
+    CarlosFilho-ProvaFinal-SGLnx
+  Versão de MetaDados
+    V1 e V2 (token opcional)
+
+GRUPO DESTINO (TARGET GROUP)
+  Nome
+    CarlosFilho-ProvaFinal-TG
+  Protocolo
+    HTTP    80
+  Tipo IP
+    IPv4
+  VPC
+    CarlosFilho-ProvaFinal-VPC
+  Versao
+    HTTP1
+  Tags
+    Name
+      CarlosFilho-ProvaFinal-TG
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+
+BALANCEADOR DE CARGA (APPLICATION LOAD BALANCER)
+  Nome
+    CarlosFilho-ProvaFinal-ALB
+  Esquema
+    Voltado para Internet
+  Tipo
+    IPv4
+  VPC
+    CarlosFilho-ProvaFinal-VPC
+    Zonas
+      us-east-1a
+      Subnet
+        CarlosFilho-ProvaFinal-SubnetPublic01
+      us-east-1b
+      Subnet
+        CarlosFilho-ProvaFinal-SubnetPublic02
+    Listener
+      HTTP    80    CarlosFilho-ProvaFinal-TG
+  Lattice
+    Não disponivel
+  Verificacao de Integridade EC2
+    Ative as verificacoes de integridade do ELB
+    Periodo de Tolerancia de Verificacao
+      120 segundos
+  Habilitar coleta de metricas de grupo no CloudWatch
+
+GRUPO DE ESCALABILIDADE AUTOMATICA (AUTO SCALING GROUP)
+  Nome
+    CarlosFilho-ProvaFinal-ASG
+  Modelo execucao
+    CarlosFilho-ProvaFinal-LT
+  Versao
+    Latest
+  VPC
+    CarlosFilho-ProvaFinal-VPC
+  Zonas
+    CarlosFilho-ProvaFinal-SubnetPublic01
+    CarlosFilho-ProvaFinal-SubnetPublic02
+  Tamanho do Grupo
+    Capacidade
+      2
+  Escalabilidade
+    Capacidade Minima
+      2
+    Capacidade Maxima
+      2
+  Ajuste de escala automatica
+    Nenhuma politica de escalabilidade
+  Politica de manutencao de instancias
+    Nenhuma politica
+  Tags
+    Name
+      Application
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+    Etiquetar novas instancias
+#############################################################################################
+                                                                                       # OK #
+                                                                                       ######
+
+
+#############################################################################################
+# 05 #  Criar uma instância com a imagem "ami-0ce99e1aa603296bb" que seja acessível apenas  #
+######  de dentro da VPC e anexe um volume EBS extra de 10 GB, utilize o tipo t2.micro.     #
+#############################################################################################
+VPC ENDPOINT
+  Name
+    CarlosFilho-ProvaFinal-EndpointEC2IC
+  Service category
+    EC2 Instance Connect Endpoint
+  VPC
+    CarlosFilho-ProvaFinal-VPC
+  Grupo de Segurança
+    CarlosFilho-ProvaFinal-SGLnx
+  Subnet
+    CarlosFilho-ProvaFinal-SubnetPrivate01
+  Tags
+    Name
+      CarlosFilho-ProvaFinal-EndpointEC2IC
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+
+INSTANCIA
+  Tags
+    Name
+      ApplicationWEB
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+  AMI
+    ami-0ce99e1aa603296bb
+  Instância
+    t2.micro
+  Par de Chaves
+    CarlosFilho-ProvaFinal-CloudTreinamentos.pem
+  VPC
+    CarlosFilho-ProvaFinal-VPC
+  Subnet
+    CarlosFilho-ProvaFinal-SubnetPrivate01
+  IP Publico
+    Deabilitar
+  Grupo de Segurança
+    CarlosFilho-ProvaFinal-SGLnx
+  Versão de MetaDados
+    V1 e V2 (token opcional)
+
+EBS
+  Tipo
+    SSD (gp3)
+  Tamanho
+    10GB
+  Zona
+    us-east-1a
+  Ações >> Associar volume
+    Instancia
+      ApplicationWEB
+    Dispositivo
+      /dev/sde
+
+TESTE
+  lsblk
+  mkdir -p /mnt/ebs_volume
+  mkfs -t ext4 /dev/xvde
+  mount /dev/xvde /mnt/ebs_volume
+  sed -i -e $'$a\\/dev/xvde   /mnt/ebs_volume   ext4   defaults,nofail   0   2' /etc/fstab
+  echo -ne "Arquivo criado no novo volume EBS, referente\n
+  a questao 05, do projeto final do curso de\n
+  Especializacao AWS\n
+  em:\n
+  `date '+%a, %d/%m/%Y %H:%M:%S %Z'`\n
+  `TZ=\"America/Fortaleza\" date '+%a, %d/%m/%Y %T LOCAL'`\n" > /mnt/ebs_volume/new-file.txt
+#############################################################################################
+                                                                                       # OK #
+                                                                                       ######
+
+
+#############################################################################################
+# 06 #  Crie um banco de dados MySQL com acesso PÚBLICO TOTAL utilizando o RDS e coloque    #
+######  na resposta desta questão o endpoint, usuário e senha para acesso ao banco, utilize #
+#       instância db.t2.micro sem alta disponibilidade.                                     #
+#############################################################################################
+DB SUBNET GROUP
+  Name
+    CarlosFilho-ProvaFinal-DBSubnetGroup
+  Description
+    Subnets publicas para o banco de dados
+  VPC
+    CarlosFilho-ProvaFinal-VPC
+  Avaliabily Zones
+    us-east-1a
+    us-east-10b
+  Subnets
+    CarlosFilho-ProvaFinal-SubnetPublic01
+    CarlosFilho-ProvaFinal-SubnetPublic02
+
+DATABASE
+  Creation method
+    Standard
+  Engine
+    MySQL
+    Edition
+      Community
+    Version
+      8.0.39
+  Templates
+    Free Tier
+  DB Instance ID
+    CarlosFilho-ProvaFinal-DB
+  Credentials
+    Master username
+      master
+    Management
+      Self managed
+    Auto generate password
+  Instance configuration type
+    db.t2.micro
+  Connectivity
+    Don’t connect to an EC2 compute resource
+    Type
+      IPv4
+  VPC
+    CarlosFilho-ProvaFinal-VPC
+  DB Subnet Group
+    CarlosFilho-ProvaFinal-DBSubnetGroup
+    Public access
+      Yes
+  VPC Security Group
+    CarlosFilho-ProvaFinal-SGDB
+  Avaliabily Zones
+    No preferences
+  Tags
+    Name
+      CarlosFilho-ProvaFinal-DB
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+  Database authentication
+    Password authentication
+  Additional configuration
+    Database Name
+      dbteste
+    Backup
+      disabled
+    Encryption
+      disabled
+
+TESTE
+  Linux
+    mysql -h provafinal-modulo10-db.c5cms4mu2wj5.us-east-1.rds.amazonaws.com -umaster -p'nwV8rfWHX3ilUgEriK4A' -D dbteste
+    show tables;
+    exit;
+
+RESPOSTA
+  dbteste
+    Endpoint
+      provafinal-modulo10-db.c5cms4mu2wj5.us-east-1.rds.amazonaws.com
+    Usuario
+      master
+    Senha
+      nwV8rfWHX3ilUgEriK4A
+#############################################################################################
+                                                                                       # OK #
+                                                                                       ######
+
+
+#############################################################################################
+# 07 #  Utilizando o CodeDeploy faça o deploy da nova versão da aplicação dentro das        #
+######  instâncias criadas na questão 4. A nova versão da aplicação está disponível no S3   #
+#       dentro do bucket "deploy-prova-aws-virginia". Será necessário INSTALAR, CONFIGURAR  #
+#       e REINICIAR o agente.                                                               #
+#############################################################################################
 https://docs.aws.amazon.com/pt_br/codedeploy/latest/userguide/codedeploy-agent-operations-install-linux.html 
 OK
 
-8 - Crie um novo bucket e configure um site estático com os arquivos presentes na
-URL no fim da questão, configure a página principal e de erro. Após isto, configure
-a REPLICAÇÃO deste bucket criado em um novo bucket na mesma região:
-https://cloudtreinamentos.s3.amazonaws.com/AWS/zip/Site.zip
+#############################################################################################
+# 08 #  Crie um novo bucket e configure um site estático com os arquivos presentes na       #
+######  URL no fim da questão, configure a página principal e de erro. Após isto, configure #
+#       a REPLICAÇÃO deste bucket criado em um novo bucket na mesma região:                 #
+#       https://cloudtreinamentos.s3.amazonaws.com/AWS/zip/Site.zip                         #
+#############################################################################################
 OK
 
-9 - No serviço de DNS acesse o domínio "profissionalcloud.com" e crie um registro
-para o load balancer com endereço "balance.profissionalcloud.com" e crie um registro
-para o site estático com o endereço "estatico.profissionalcloud.com".
+#############################################################################################
+# 09 #  No serviço de DNS acesse o domínio "profissionalcloud.com" e crie um registro para  #
+######  o load balancer com endereço "balance.profissionalcloud.com" e crie um registro     #
+#       para o site estático com o endereço "estatico.profissionalcloud.com".               #
+#############################################################################################
 OK
 
-10 - No CloudWatch crie um alarme para a quantidade de objetos de dentro do bucket
-"deploy-prova-aws-virginia"  para quando a quantidade de objetos PASSAR de 500 com
-notificação para seu e-mail no SNS. Crie também um 1 gráfico de tráfego do load
-balancer e outros 2 gráficos de sua escolha no painel de nome "virginia".
-OBS: Não se esqueça de salvar.
+#############################################################################################
+# 10 #  No CloudWatch crie um alarme para a quantidade de objetos de dentro do bucket       #
+######  "deploy-prova-aws-virginia"  para quando a quantidade de objetos PASSAR de 500 com  #
+#       notificação para seu e-mail no SNS. Crie também um 1 gráfico de tráfego do load     #
+#       balancer e outros 2 gráficos de sua escolha no painel de nome "virginia".           #
+#                                                            OBS: Não se esqueça de salvar. #
+#############################################################################################
 OK
 
 
