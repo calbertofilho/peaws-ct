@@ -23,6 +23,18 @@ abaixo dentro da região de N. VIRGINIA, cada questão valerá 1 ponto.
 #############################################################################################
 KEY PAIR
   CarlosFilho-ProvaFinal-CloudTreinamentos.pem
+
+ROLES
+  CodeDeploy
+    Name
+      CarlosFilho-ProvaFinal-CloudTreinamentos-AWSCodeDeployRole
+    Policy
+      AWSCodeDeployRole
+  EC2-S3
+    Name
+      CarlosFilho-ProvaFinal-CloudTreinamentos-AmazonS3ReadOnlyRole
+    Policy
+      AmazonS3ReadOnlyAccess  
 #############################################################################################
                                                                                        # OK #
                                                                                        ######
@@ -250,6 +262,15 @@ MODELO EXECUCAO (LAUNCH TEMPLATE)
     CarlosFilho-ProvaFinal-SGLnx
   Versão de MetaDados
     V1 e V2 (token opcional)
+  IAM Instance Profile
+    CarlosFilho-ProvaFinal-CloudTreinamentos-AmazonS3ReadOnlyRole
+  User Data
+    sudo apt update
+    sudo apt install -fym ruby-full wget
+    cd ~
+    wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install
+    chmod +x ./install
+    sudo ./install auto
 
 GRUPO DESTINO (TARGET GROUP)
   Nome
@@ -496,9 +517,20 @@ RESPOSTA
 ######  instâncias criadas na questão 4. A nova versão da aplicação está disponível no S3   #
 #       dentro do bucket "deploy-prova-aws-virginia". Será necessário INSTALAR, CONFIGURAR  #
 #       e REINICIAR o agente.                                                               #
+https://docs.aws.amazon.com/pt_br/codedeploy/latest/userguide/codedeploy-agent-operations-install-linux.html
 #############################################################################################
-https://docs.aws.amazon.com/pt_br/codedeploy/latest/userguide/codedeploy-agent-operations-install-linux.html 
-OK
+Create Application
+  Name
+    app-WEB
+
+Create a deployment Group
+  Name
+    app-WEB-DeploymentGroup
+  
+#############################################################################################
+                                                                                       # OK #
+                                                                                       ######
+
 
 #############################################################################################
 # 08 #  Crie um novo bucket e configure um site estático com os arquivos presentes na       #
