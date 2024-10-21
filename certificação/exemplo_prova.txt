@@ -30,14 +30,16 @@ ROLES
       CarlosFilho-ProvaFinal-CloudTreinamentos-AWSCodeDeployRole
     Policy
       AWSCodeDeployRole
-  EC2-S3
+  EC2
     Name
       CarlosFilho-ProvaFinal-CloudTreinamentos-AmazonS3ReadOnlyRole
     Policy
       AmazonS3ReadOnlyAccess  
+  RDS
 #############################################################################################
                                                                                        # OK #
                                                                                        ######
+
 
 
 #############################################################################################
@@ -58,6 +60,7 @@ Desenvolvimento (AmazonEC2ReadOnlyAccess / AmazonS3ReadOnlyAccess)
 #############################################################################################
                                                                                        # OK #
                                                                                        ######
+
 
 
 #############################################################################################
@@ -191,6 +194,7 @@ LINUX
                                                                                        ######
 
 
+
 #############################################################################################
 # 03 #  Criar uma instância Windows PÚBLICA TOTAL com nome "Windows01", dentro da           #
 ######  instância instalar e configurar o AWS CLI. Coloque na resposta desta questão o IP   #
@@ -215,7 +219,7 @@ IP Publico
   Habilitar
 Grupo de Segurança
   CarlosFilho-ProvaFinal-SGWin
-User_Data
+User Data
   <script>
     msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi /qn
   </script>
@@ -233,6 +237,7 @@ RESPOSTA
 #############################################################################################
                                                                                        # OK #
                                                                                        ######
+
 
 
 #############################################################################################
@@ -350,6 +355,7 @@ GRUPO DE ESCALABILIDADE AUTOMATICA (AUTO SCALING GROUP)
                                                                                        ######
 
 
+
 #############################################################################################
 # 05 #  Criar uma instância com a imagem "ami-0ce99e1aa603296bb" que seja acessível apenas  #
 ######  de dentro da VPC e anexe um volume EBS extra de 10 GB, utilize o tipo t2.micro.     #
@@ -422,6 +428,7 @@ TESTE
 #############################################################################################
                                                                                        # OK #
                                                                                        ######
+
 
 
 #############################################################################################
@@ -512,6 +519,7 @@ RESPOSTA
                                                                                        ######
 
 
+
 #############################################################################################
 # 07 #  Utilizando o CodeDeploy faça o deploy da nova versão da aplicação dentro das        #
 ######  instâncias criadas na questão 4. A nova versão da aplicação está disponível no S3   #
@@ -528,8 +536,9 @@ Create a deployment Group
     app-WEB-DeploymentGroup
   
 #############################################################################################
-                                                                                       # OK #
+                                                                                       # !! #
                                                                                        ######
+
 
 
 #############################################################################################
@@ -538,14 +547,20 @@ Create a deployment Group
 #       a REPLICAÇÃO deste bucket criado em um novo bucket na mesma região:                 #
 #       https://cloudtreinamentos.s3.amazonaws.com/AWS/zip/Site.zip                         #
 #############################################################################################
-OK
+                                                                                       # OK #
+                                                                                       ######
+
+
 
 #############################################################################################
 # 09 #  No serviço de DNS acesse o domínio "profissionalcloud.com" e crie um registro para  #
 ######  o load balancer com endereço "balance.profissionalcloud.com" e crie um registro     #
 #       para o site estático com o endereço "estatico.profissionalcloud.com".               #
 #############################################################################################
-OK
+                                                                                       # OK #
+                                                                                       ######
+
+
 
 #############################################################################################
 # 10 #  No CloudWatch crie um alarme para a quantidade de objetos de dentro do bucket       #
@@ -554,7 +569,8 @@ OK
 #       balancer e outros 2 gráficos de sua escolha no painel de nome "virginia".           #
 #                                                            OBS: Não se esqueça de salvar. #
 #############################################################################################
-OK
+                                                                                       # OK #
+                                                                                       ######
 
 
 
