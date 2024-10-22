@@ -246,8 +246,8 @@ RESPOSTA
 ######  também um Application Load Balancer entre as 2 instâncias, levando em consideração  #
 #       a alta disponibilidade, e utilize instâncias t2.micro.                              #
 #############################################################################################
-MODELO EXECUCAO (LAUNCH TEMPLATE)
-  Nome
+MODELO EXECUCAO (LAUNCH TEMPLATE)                                                 # REVISAR #
+  Nome                                                                            ###########
     CarlosFilho-ProvaFinal-LT
   Descricao
     Modelo de execucao da applicacao WEB
