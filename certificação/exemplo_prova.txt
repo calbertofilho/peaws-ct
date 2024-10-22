@@ -49,7 +49,7 @@ ROLES
 #       Criar um grupo "Desenvolvimento" com permissão apenas leitura no EC2 e S3, dentro   #
 #       deste grupo você deve criar um usuário chamado Caio.                                #
 #############################################################################################
-Infraestrutura (AdministratosAccess)
+Infraestrutura (AdministratorAccess)
   https://upperaws.signin.aws.amazon.com/console
   Mateus    (IAM User)
   9bbU}1$=
@@ -159,7 +159,7 @@ WINDOWS
   Nome
     CarlosFilho-ProvaFinal-SGWin
   Descrição
-    Security Group [SG_WINDOWS] liberando as portas necessarias para a avaliacao final
+    Security Group [SG_WINDOWS] liberando as portas necessarias para o acesso remoto
   VPC
     CarlosFilho-ProvaFinal-VPC
   Regras de Entrada
@@ -176,18 +176,35 @@ LINUX
   Nome
     CarlosFilho-ProvaFinal-SGLnx
   Descrição
-    Security Group [SG_LINUX] liberando as portas necessarias para a avaliacao final
+    Security Group [SG_LINUX] liberando as portas necessarias para a aplicação web
   VPC
     CarlosFilho-ProvaFinal-VPC
   Regras de Entrada
-    RDP     22          0.0.0.0/0
-    RDP     80          0.0.0.0/0
-    RDP     443         0.0.0.0/0
+    SSH      22         0.0.0.0/0
+    HTTP     80         0.0.0.0/0
+    HTTPS   443         0.0.0.0/0
   Regras de Saída
     Todo o tráfego      0.0.0.0/0
   Tags
     Name
       CarlosFilho-ProvaFinal-SGLnx
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+
+DB
+  Name
+    CarlosFilho-ProvaFinal-SGDB
+  Descrição
+    Security Group [SG_DATABASE] liberando as portas necessarias para o banco de dados
+  VPC
+    CarlosFilho-ProvaFinal-VPC
+  Regras de Entrada
+    MYSQL    22         0.0.0.0/0
+  Regras de Saída
+    Todo o tráfego      0.0.0.0/0
+  Tags
+    Name
+      CarlosFilho-ProvaFinal-SGDB
     Common
       CarlosFilho-ProvaFinal-CloudTreinamentos
 #############################################################################################
