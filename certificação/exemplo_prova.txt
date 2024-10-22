@@ -34,7 +34,8 @@ ROLES
     Name
       CarlosFilho-ProvaFinal-CloudTreinamentos-AmazonS3ReadOnlyRole
     Policy
-      AmazonS3ReadOnlyAccess  
+      AmazonS3ReadOnlyAccess
+      AmazonSSMManagedInstanceCore
   RDS
 #############################################################################################
                                                                                        # OK #
