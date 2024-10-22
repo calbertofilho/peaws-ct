@@ -246,111 +246,6 @@ RESPOSTA
 ######  também um Application Load Balancer entre as 2 instâncias, levando em consideração  #
 #       a alta disponibilidade, e utilize instâncias t2.micro.                              #
 #############################################################################################
-MODELO EXECUCAO (LAUNCH TEMPLATE)                                                 # REVISAR #
-  Nome                                                                            ###########
-    CarlosFilho-ProvaFinal-LT
-  Descricao
-    Modelo de execucao da applicacao WEB
-  Tags
-    Name
-      CarlosFilho-ProvaFinal-LT
-    Common
-      CarlosFilho-ProvaFinal-CloudTreinamentos
-  AMI
-    ami-0ce99e1aa603296bb
-  Instância
-    t2.micro
-  Par de Chaves
-    CarlosFilho-ProvaFinal-CloudTreinamentos.pem
-  Subnet
-    Nao incluir no template
-  Grupo de Segurança
-    CarlosFilho-ProvaFinal-SGLnx
-  Versão de MetaDados
-    V1 e V2 (token opcional)
-  IAM Instance Profile
-    CarlosFilho-ProvaFinal-CloudTreinamentos-AmazonS3ReadOnlyRole
-  User Data
-    sudo apt update
-    sudo apt install -fym ruby-full wget
-    cd ~
-    wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install
-    chmod +x ./install
-    sudo ./install auto
-
-GRUPO DESTINO (TARGET GROUP)
-  Nome
-    CarlosFilho-ProvaFinal-TG
-  Protocolo
-    HTTP    80
-  Tipo IP
-    IPv4
-  VPC
-    CarlosFilho-ProvaFinal-VPC
-  Versao
-    HTTP1
-  Tags
-    Name
-      CarlosFilho-ProvaFinal-TG
-    Common
-      CarlosFilho-ProvaFinal-CloudTreinamentos
-
-BALANCEADOR DE CARGA (APPLICATION LOAD BALANCER)
-  Nome
-    CarlosFilho-ProvaFinal-ALB
-  Esquema
-    Voltado para Internet
-  Tipo
-    IPv4
-  VPC
-    CarlosFilho-ProvaFinal-VPC
-    Zonas
-      us-east-1a
-      Subnet
-        CarlosFilho-ProvaFinal-SubnetPublic01
-      us-east-1b
-      Subnet
-        CarlosFilho-ProvaFinal-SubnetPublic02
-    Listener
-      HTTP    80    CarlosFilho-ProvaFinal-TG
-  Lattice
-    Não disponivel
-  Verificacao de Integridade EC2
-    Ative as verificacoes de integridade do ELB
-    Periodo de Tolerancia de Verificacao
-      120 segundos
-  Habilitar coleta de metricas de grupo no CloudWatch
-
-GRUPO DE ESCALABILIDADE AUTOMATICA (AUTO SCALING GROUP)
-  Nome
-    CarlosFilho-ProvaFinal-ASG
-  Modelo execucao
-    CarlosFilho-ProvaFinal-LT
-  Versao
-    Latest
-  VPC
-    CarlosFilho-ProvaFinal-VPC
-  Zonas
-    CarlosFilho-ProvaFinal-SubnetPublic01
-    CarlosFilho-ProvaFinal-SubnetPublic02
-  Tamanho do Grupo
-    Capacidade
-      2
-  Escalabilidade
-    Capacidade Minima
-      2
-    Capacidade Maxima
-      2
-  Ajuste de escala automatica
-    Nenhuma politica de escalabilidade
-  Politica de manutencao de instancias
-    Nenhuma politica
-  Tags
-    Name
-      Application
-    Common
-      CarlosFilho-ProvaFinal-CloudTreinamentos
-    Etiquetar novas instancias
 #############################################################################################
                                                                                        # OK #
                                                                                        ######
@@ -579,3 +474,126 @@ Nunca envie senhas pelo Formulários Google.
 Este formulário foi criado em InitD LTDA.
 Denunciar abuso
 Google Formulários
+
+
+
+
+
+
+
+
+
+
+#############################################################################################
+# EXTRA #  Auto Scaling Group                                                               #
+#########                                                                                   #
+#                                                                                           #
+#############################################################################################
+MODELO EXECUCAO (LAUNCH TEMPLATE)
+  Nome
+    CarlosFilho-ProvaFinal-LT
+  Descricao
+    Modelo de execucao da applicacao WEB
+  Tags
+    Name
+      CarlosFilho-ProvaFinal-LT
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+  AMI
+    ami-0ce99e1aa603296bb
+  Instância
+    t2.micro
+  Par de Chaves
+    CarlosFilho-ProvaFinal-CloudTreinamentos.pem
+  Subnet
+    Nao incluir no template
+  Grupo de Segurança
+    CarlosFilho-ProvaFinal-SGLnx
+  Versão de MetaDados
+    V1 e V2 (token opcional)
+  IAM Instance Profile
+    CarlosFilho-ProvaFinal-CloudTreinamentos-AmazonS3ReadOnlyRole
+  User Data
+    sudo apt update
+    sudo apt install -fym ruby-full wget
+    cd ~
+    wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install
+    chmod +x ./install
+    sudo ./install auto
+
+GRUPO DESTINO (TARGET GROUP)
+  Nome
+    CarlosFilho-ProvaFinal-TG
+  Protocolo
+    HTTP    80
+  Tipo IP
+    IPv4
+  VPC
+    CarlosFilho-ProvaFinal-VPC
+  Versao
+    HTTP1
+  Tags
+    Name
+      CarlosFilho-ProvaFinal-TG
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+
+BALANCEADOR DE CARGA (APPLICATION LOAD BALANCER)
+  Nome
+    CarlosFilho-ProvaFinal-ALB
+  Esquema
+    Voltado para Internet
+  Tipo
+    IPv4
+  VPC
+    CarlosFilho-ProvaFinal-VPC
+    Zonas
+      us-east-1a
+      Subnet
+        CarlosFilho-ProvaFinal-SubnetPublic01
+      us-east-1b
+      Subnet
+        CarlosFilho-ProvaFinal-SubnetPublic02
+    Listener
+      HTTP    80    CarlosFilho-ProvaFinal-TG
+  Lattice
+    Não disponivel
+  Verificacao de Integridade EC2
+    Ative as verificacoes de integridade do ELB
+    Periodo de Tolerancia de Verificacao
+      120 segundos
+  Habilitar coleta de metricas de grupo no CloudWatch
+
+GRUPO DE ESCALABILIDADE AUTOMATICA (AUTO SCALING GROUP)
+  Nome
+    CarlosFilho-ProvaFinal-ASG
+  Modelo execucao
+    CarlosFilho-ProvaFinal-LT
+  Versao
+    Latest
+  VPC
+    CarlosFilho-ProvaFinal-VPC
+  Zonas
+    CarlosFilho-ProvaFinal-SubnetPublic01
+    CarlosFilho-ProvaFinal-SubnetPublic02
+  Tamanho do Grupo
+    Capacidade
+      2
+  Escalabilidade
+    Capacidade Minima
+      2
+    Capacidade Maxima
+      2
+  Ajuste de escala automatica
+    Nenhuma politica de escalabilidade
+  Politica de manutencao de instancias
+    Nenhuma politica
+  Tags
+    Name
+      Application
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+    Etiquetar novas instancias
+#############################################################################################
+                                                                                       # OK #
+                                                                                       ######
