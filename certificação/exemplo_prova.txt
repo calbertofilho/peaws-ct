@@ -647,6 +647,49 @@ https://docs.aws.amazon.com/pt_br/codedeploy/latest/userguide/codedeploy-agent-o
 #       a REPLICAÇÃO deste bucket criado em um novo bucket na mesma região:                 #
 #       https://cloudtreinamentos.s3.amazonaws.com/AWS/zip/Site.zip                         #
 #############################################################################################
+BUCKET
+  Name
+    estatico.profissionalcloud.com
+  Tags
+    Name
+      CarlosFilho-ProvaFinal-S3Bucket
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+  Descompactar o arquivo Site.zip e fazer o upload dos arquivos para o bucket
+
+estatico.profissionalcloud.com
+  Properties
+    Static website hosting [EDIT]
+      Enable
+    Hosting type
+      Host a static website
+    Index document
+      index.html
+    Error document
+      erro.html
+
+  Permissions
+    Block public access (bucket settings) [EDIT]
+      Desmarcar: Block all public access [SAVE CHANGES]
+    Bucket Policy [EDIT]
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicReadGetObject",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": [
+                "s3:GetObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::estatico.profissionalcloud.com/*"
+            ]
+        }
+    ]
+}
+       [SAVE CHANGES]
+#############################################################################################
                                                                                        # OK #
                                                                                        ######
 
