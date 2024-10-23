@@ -689,8 +689,10 @@ estatico.profissionalcloud.com
     ]
 }
        [SAVE CHANGES]
+
+  REPLICACAO ???
 #############################################################################################
-                                                                                       # OK #
+                                                                                       # !! #
                                                                                        ######
 
 
@@ -700,14 +702,14 @@ estatico.profissionalcloud.com
 ######  o load balancer com endereço "balance.profissionalcloud.com" e crie um registro     #
 #       para o site estático com o endereço "estatico.profissionalcloud.com".               #
 #############################################################################################
-                                                                                       # OK #
+                                                                                       # !! #
                                                                                        ######
 
 
 
 #############################################################################################
 # 10 #  No CloudWatch crie um alarme para a quantidade de objetos de dentro do bucket       #
-######  "deploy-prova-aws-virginia"  para quando a quantidade de objetos PASSAR de 500 com  #
+######  "deploy-prova-aws-virginia" para quando a quantidade de objetos PASSAR de 500, com  #
 #       notificação para seu e-mail no SNS. Crie também um 1 gráfico de tráfego do load     #
 #       balancer e outros 2 gráficos de sua escolha no painel de nome "virginia".           #
 #                                                            OBS: Não se esqueça de salvar. #
