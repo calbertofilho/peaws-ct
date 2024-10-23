@@ -36,7 +36,6 @@ ROLES
     Policy
       AmazonS3ReadOnlyAccess
       AmazonSSMManagedInstanceCore
-  RDS
 #############################################################################################
                                                                                        # OK #
                                                                                        ######
@@ -191,7 +190,7 @@ LINUX
     Common
       CarlosFilho-ProvaFinal-CloudTreinamentos
 
-DB
+DATABASE
   Name
     CarlosFilho-ProvaFinal-SGDB
   Descrição
@@ -199,12 +198,29 @@ DB
   VPC
     CarlosFilho-ProvaFinal-VPC
   Regras de Entrada
-    MYSQL    22         0.0.0.0/0
+    MYSQL    3306       0.0.0.0/0
   Regras de Saída
     Todo o tráfego      0.0.0.0/0
   Tags
     Name
       CarlosFilho-ProvaFinal-SGDB
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+
+VPC ENDPOINT
+  Name
+    CarlosFilho-ProvaFinal-EC2EndpointIC
+  Service category
+    EC2 Instance Connect Endpoint
+  VPC
+    CarlosFilho-ProvaFinal-VPC
+  Grupo de Segurança
+    CarlosFilho-ProvaFinal-SGLnx
+  Subnet
+    CarlosFilho-ProvaFinal-SubnetPrivate01
+  Tags
+    Name
+      CarlosFilho-ProvaFinal-EndpointEC2IC
     Common
       CarlosFilho-ProvaFinal-CloudTreinamentos
 #############################################################################################
@@ -251,7 +267,7 @@ RESPOSTA
     Usuario
       Administrator
     Senha
-      t1J-G%SzQFO&(NISSqaVWB?8?dHep)kv
+      =3-*K4gh$@M;tli6g;Rq=;D4Plha*3!)
 #############################################################################################
                                                                                        # OK #
                                                                                        ######
@@ -263,6 +279,121 @@ RESPOSTA
 ######  também um Application Load Balancer entre as 2 instâncias, levando em consideração  #
 #       a alta disponibilidade, e utilize instâncias t2.micro.                              #
 #############################################################################################
+INSTANCIA 1
+  Nome
+    CarlosFilho-ProvaFinal-Application
+  Tags
+    Name
+      CarlosFilho-ProvaFinal-Application
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+  AMI
+    ami-0ce99e1aa603296bb
+  Instância
+    t2.micro
+  Par de Chaves
+    CarlosFilho-ProvaFinal-CloudTreinamentos.pem
+  VPC
+    CarlosFilho-ProvaFinal-VPC
+  Subnet
+    CarlosFilho-ProvaFinal-SubnetPublic01
+  IP Publico
+    Habilitar
+  Grupo de Segurança
+    CarlosFilho-ProvaFinal-SGLnx
+  IAM Instance Profile
+    CarlosFilho-ProvaFinal-CloudTreinamentos-AmazonS3ReadOnlyRole
+  Versão de MetaDados
+    V1 e V2 (token opcional)
+  User Data
+    sudo apt update
+    sudo apt install -fym ruby-full wget
+    cd ~
+    wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install
+    chmod +x ./install
+    sudo ./install auto
+
+INSTANCIA 2
+  Nome
+    CarlosFilho-ProvaFinal-Application
+  Tags
+    Name
+      CarlosFilho-ProvaFinal-Application
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+  AMI
+    ami-0ce99e1aa603296bb
+  Instância
+    t2.micro
+  Par de Chaves
+    CarlosFilho-ProvaFinal-CloudTreinamentos.pem
+  VPC
+    CarlosFilho-ProvaFinal-VPC
+  Subnet
+    CarlosFilho-ProvaFinal-SubnetPublic02
+  IP Publico
+    Habilitar
+  Grupo de Segurança
+    CarlosFilho-ProvaFinal-SGLnx
+  IAM Instance Profile
+    CarlosFilho-ProvaFinal-CloudTreinamentos-AmazonS3ReadOnlyRole
+  Versão de MetaDados
+    V1 e V2 (token opcional)
+  User Data
+    sudo apt update
+    sudo apt install -fym ruby-full wget
+    cd ~
+    wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install
+    chmod +x ./install
+    sudo ./install auto
+
+GRUPO DESTINO (TARGET GROUP)
+  Target type
+    Instances
+  Nome
+    CarlosFilho-ProvaFinal-TG
+  Protocolo
+    HTTP    80
+  Tipo IP
+    IPv4
+  VPC
+    CarlosFilho-ProvaFinal-VPC
+  Versao
+    HTTP1
+  Tags
+    Name
+      CarlosFilho-ProvaFinal-TG
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+  Register Targets
+    CarlosFilho-ProvaFinal-Application		us-esat1b
+    CarlosFilho-ProvaFinal-Application		us-esat1b
+
+BALANCEADOR DE CARGA (APPLICATION LOAD BALANCER)
+  Nome
+    CarlosFilho-ProvaFinal-ALB
+  Esquema
+    Voltado para Internet
+  Tipo
+    IPv4
+  VPC
+    CarlosFilho-ProvaFinal-VPC
+    Zonas
+      us-east-1a
+      Subnet
+        CarlosFilho-ProvaFinal-SubnetPublic01
+      us-east-1b
+      Subnet
+        CarlosFilho-ProvaFinal-SubnetPublic02
+    Grupo de Segurança
+      CarlosFilho-ProvaFinal-SGLnx
+    Listener
+      HTTP    80    CarlosFilho-ProvaFinal-TG
+  Tags
+    Name
+      CarlosFilho-ProvaFinal-ALB
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
 #############################################################################################
                                                                                        # OK #
                                                                                        ######
@@ -273,27 +404,10 @@ RESPOSTA
 # 05 #  Criar uma instância com a imagem "ami-0ce99e1aa603296bb" que seja acessível apenas  #
 ######  de dentro da VPC e anexe um volume EBS extra de 10 GB, utilize o tipo t2.micro.     #
 #############################################################################################
-VPC ENDPOINT
-  Name
-    CarlosFilho-ProvaFinal-EndpointEC2IC
-  Service category
-    EC2 Instance Connect Endpoint
-  VPC
-    CarlosFilho-ProvaFinal-VPC
-  Grupo de Segurança
-    CarlosFilho-ProvaFinal-SGLnx
-  Subnet
-    CarlosFilho-ProvaFinal-SubnetPrivate01
-  Tags
-    Name
-      CarlosFilho-ProvaFinal-EndpointEC2IC
-    Common
-      CarlosFilho-ProvaFinal-CloudTreinamentos
-
 INSTANCIA
   Tags
     Name
-      ApplicationWEB
+      Linux01
     Common
       CarlosFilho-ProvaFinal-CloudTreinamentos
   AMI
@@ -310,8 +424,11 @@ INSTANCIA
     Deabilitar
   Grupo de Segurança
     CarlosFilho-ProvaFinal-SGLnx
-  Versão de MetaDados
-    V1 e V2 (token opcional)
+  IAM Instance Profile
+    AWSServiceRoleForEc2InstanceConnect
+  User Data
+    [ -d /mnt/ebs_volume ] || mkdir -p /mnt/ebs_volume
+    sed -i -e $'$a\\/dev/xvde   /mnt/ebs_volume   ext4   defaults,nofail   0   2' /etc/fstab
 
 EBS
   Tipo
@@ -320,15 +437,20 @@ EBS
     10GB
   Zona
     us-east-1a
+  Tags
+    Name
+      CarlosFilho-ProvaFinal-EBSVolume
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
   Ações >> Associar volume
     Instancia
-      ApplicationWEB
+      Linux01
     Dispositivo
       /dev/sde
 
 TESTE
   lsblk
-  mkdir -p /mnt/ebs_volume
+  [ -d /mnt/ebs_volume ] || mkdir -p /mnt/ebs_volume
   mkfs -t ext4 /dev/xvde
   mount /dev/xvde /mnt/ebs_volume
   sed -i -e $'$a\\/dev/xvde   /mnt/ebs_volume   ext4   defaults,nofail   0   2' /etc/fstab
@@ -338,6 +460,7 @@ TESTE
   em:\n
   `date '+%a, %d/%m/%Y %H:%M:%S %Z'`\n
   `TZ=\"America/Fortaleza\" date '+%a, %d/%m/%Y %T LOCAL'`\n" > /mnt/ebs_volume/new-file.txt
+  clear && cat /mnt/ebs_volume/new-file.txt
 #############################################################################################
                                                                                        # OK #
                                                                                        ######
@@ -360,8 +483,8 @@ DB SUBNET GROUP
     us-east-1a
     us-east-10b
   Subnets
-    CarlosFilho-ProvaFinal-SubnetPublic01
-    CarlosFilho-ProvaFinal-SubnetPublic02
+    CarlosFilho-ProvaFinal-SubnetPublic01		10.1.21.0/24
+    CarlosFilho-ProvaFinal-SubnetPublic02		10.1.22.0/24
 
 DATABASE
   Creation method
@@ -413,20 +536,22 @@ DATABASE
     Encryption
       disabled
 
+Pegar a senha do usuario MASTER
+
 TESTE
   Linux
-    mysql -h provafinal-modulo10-db.c5cms4mu2wj5.us-east-1.rds.amazonaws.com -umaster -p'nwV8rfWHX3ilUgEriK4A' -D dbteste
+    mysql -h carlosfilho-provafinal-db.c5cms4mu2wj5.us-east-1.rds.amazonaws.com -umaster -p'16OMg1pkHUIaA1aOFL51' -D dbteste
     show tables;
     exit;
 
 RESPOSTA
   dbteste
     Endpoint
-      provafinal-modulo10-db.c5cms4mu2wj5.us-east-1.rds.amazonaws.com
+      carlosfilho-provafinal-db.c5cms4mu2wj5.us-east-1.rds.amazonaws.com
     Usuario
       master
     Senha
-      nwV8rfWHX3ilUgEriK4A
+      16OMg1pkHUIaA1aOFL51
 #############################################################################################
                                                                                        # OK #
                                                                                        ######
@@ -438,18 +563,80 @@ RESPOSTA
 ######  instâncias criadas na questão 4. A nova versão da aplicação está disponível no S3   #
 #       dentro do bucket "deploy-prova-aws-virginia". Será necessário INSTALAR, CONFIGURAR  #
 #       e REINICIAR o agente.                                                               #
+#############################################################################################
+APPSPEC.YML
+version: 0.0
+os: linux
+files:
+  - source: /build/
+    destination: /home/ubuntu/app/
+hooks:
+  BeforeInstall:
+    - location: Scripts/before_install.sh
+      timeout: 180
+      runas: root
+  AfterInstall:
+    - location: Scripts/after_install.sh
+      timeout: 180
+      runas: root
+  ApplicationStart:
+    - location: Scripts/app_start.sh
+      timeout: 180
+      runas: root
+
+APPLICATION (AppWEB.zip)
+  L appspec.yml
+  L build
+      L ...
+  L Scripts
+      L after_install.sh
+      L app_start.sh
+      L before_install.sh
+
+Create application
+  Name
+    CarlosFilho-ProvaFinal-AppWEB
+  Compute
+    EC2/On-premises
+  Tags
+    Name
+      CarlosFilho-ProvaFinal-AppWEB
+    Common
+      CarlosFilho-ProvaFinal-CloudTreinamentos
+
+Create a deployment group
+  Name
+    CarlosFilho-ProvaFinal-AppWEBDeploymentGroup
+  Service Role
+    CarlosFilho-ProvaFinal-CloudTreinamentos-AWSCodeDeployRole
+  Deployment type
+    In-place
+  Environment configuration
+    Amazon EC2 Instances
+      Name
+        CarlosFilho-ProvaFinal-Application
+  Install AWS CodeDeploy Agent
+    Never
+  Deployment configuration
+    CodeDeployDefault.AllAtOnce
+  Disable load balancing
+
+Create deployment
+  Deployment group
+    CarlosFilho-ProvaFinal-AppWEBDeploymentGroup
+  Revision type
+    My application is stored in Amazon S3
+  Revision location
+    S3 File URI (s3://carlosfilho-provafinal-cloudtreinamentos-codedeploybucket/app-web.zip)
+  Revision filetype
+    .zip
+  Content options
+    Overwrite the content
+
+Consulta:
 https://docs.aws.amazon.com/pt_br/codedeploy/latest/userguide/codedeploy-agent-operations-install-linux.html
 #############################################################################################
-Create Application
-  Name
-    app-WEB
-
-Create a deployment Group
-  Name
-    app-WEB-DeploymentGroup
-  
-#############################################################################################
-                                                                                       # !! #
+                                                                                       # OK #
                                                                                        ######
 
 
